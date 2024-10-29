@@ -1,0 +1,4 @@
+[submodule "3-step-ea"]
+	path = 3-step-ea
+	url = https://github.com/jgh9094/tpot2.git
+	branch = 3-step-ea
