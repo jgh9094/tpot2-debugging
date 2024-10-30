@@ -93,7 +93,8 @@ def get_estimator_params(n_jobs,
                          split_select,
                          X_train,
                          y_train,
-                         seed):
+                         seed,
+                         save_path):
     # split the training data
     print('(train)', 1.0-split_select, '/ (select)', split_select)
     if classification:
@@ -114,6 +115,10 @@ def get_estimator_params(n_jobs,
 
     print('Any negative values in X_learn:', any_negative(X_learn))
     print('Any negative values in X_select:', any_negative(X_select))
+
+    # save the learn and select data
+    with open(f"{save_path}/learn-select.pkl", "wb") as f:
+        pickle.dump({"X_learn": X_learn, "y_learn": y_learn, 'X_select': X_select, 'y_select': y_select}, f)
 
     # negative weights for regression tasks and positive weights for classification tasks
     objective_weight = -1.0 if not classification else 1.0
@@ -259,16 +264,20 @@ def get_best_pipeline_results(est, obj_names, scheme, seed, classification):
 
 # execute task with tpot2
 def execute_experiment(split_select, scheme, task_id, n_jobs, save_path, seed, classification):
-    # generate directory to save results
+    # # generate directory to save results
     save_folder = f"{save_path}/{seed}-{task_id}"
-    if os.path.exists(save_folder):
-        print('FOLDER ALREADY EXISTS:', save_folder)
-        return
+    # if os.path.exists(save_folder):
+    #     print('FOLDER ALREADY EXISTS:', save_folder)
+    #     return
 
     # run experiment
     try:
         print("LOADING DATA")
         X_train, y_train, X_test, y_test = load_task(task_id, preprocess=True, classification=classification)
+
+        # save all the data
+        with open(f"{save_folder}/orignial-data.pkl", "wb") as f:
+            pickle.dump({"X_train": X_train, "y_train": y_train, "X_test": X_test, "y_test": y_test}, f)
 
         # get estimator parameters
         names, est_params = get_estimator_params(n_jobs=n_jobs,classification=classification,scheme=scheme,split_select=split_select,X_train=X_train,y_train=y_train,seed=seed)
