@@ -280,7 +280,7 @@ def execute_experiment(split_select, scheme, task_id, n_jobs, save_path, seed, c
             pickle.dump({"X_train": X_train, "y_train": y_train, "X_test": X_test, "y_test": y_test}, f)
 
         # get estimator parameters
-        names, est_params = get_estimator_params(n_jobs=n_jobs,classification=classification,scheme=scheme,split_select=split_select,X_train=X_train,y_train=y_train,seed=seed)
+        names, est_params = get_estimator_params(n_jobs=n_jobs,classification=classification,scheme=scheme,split_select=split_select,X_train=X_train,y_train=y_train,seed=seed,save_path=save_folder)
         return
         est = tpot2.TPOTEstimator(**est_params)
 
